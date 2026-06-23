@@ -1,0 +1,32 @@
+#include <vector>
+#include <string>
+class List{
+private:
+std::vector<std::string> ToDo;
+std::vector<std::string>old;
+std::vector<std::string> done;
+std::string key;
+bool save;
+public:
+List (std::string k){key=k; save=true;}
+void saving(bool S){save=S;}
+bool issave(){return save;}
+void add(std::string added){ToDo.emplace_back(added);}
+void show();
+void del(int d);
+void showold(int count=1);
+void setdone(int task);
+int showdone();
+bool Tempty(){return ToDo.empty();}
+bool Dempty(){return done.empty();}
+bool Oempty(){return old.empty();}
+void restart();
+void clearD (){done.clear();}
+void clearO(){old.clear();}
+void clear(){ToDo.clear();clearO();key="";clearD();}
+std::string getkey(){return key;}
+void setkey(std::string k){key=k;}
+bool found(int ind);
+int size(){return ToDo.size();}
+void clearmemory(){done.shrink_to_fit();ToDo.shrink_to_fit();old.shrink_to_fit();}
+};
