@@ -204,15 +204,53 @@ while True:
     else:
         print("Wrong Input ") """
 #Set
-print("Hello to find copy text")
-first=input("Add first text ")
-Sc=input("Add second text ")
-first=first.lower().split()
-Sc=Sc.lower().split()
-st1=set(first)
-st2=set(Sc)
-fim=st1&st2
-alll=st1|st2
-ANum=len(alll)
-DNum=len(fim)
-print(f"{(DNum/ANum)*100:0f}%")
+def admin(pas,football,basket,swim):
+    while True:
+        if pas=="":
+            print("Hello admin sign in ")
+            pas=input("Enter new password ")
+            continue
+        print("Enter password ")
+        chpas=input("")
+        if pas==chpas :
+            while True:
+                print("Hello admin ")
+        else :
+            print("wrong pasword")
+            continue
+def menu():
+    while True:
+        print("Enter username ")
+        user=input()
+        
+def signin(Pas:dict,user:list):
+    print("Hello to new account")
+    while True:
+        name=input("Enter username     ").strip()
+        if name in user:
+            print("ueername is used enter another username")
+            continue
+        print("Enter new password ")
+        pas=input()
+        if pas=="":
+            print("weak password try again")
+            continue
+        Passwords[name]=pas
+        print("Sign in successfully ")
+        break
+
+
+users=[]
+swimmers={}
+Basketball_players={}
+Fottball_players={}
+Passwords={"name":"password"}
+admpws=""
+while True:
+    print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login \n4-exit")
+    ch=input("").strip()
+    if ch=="1":admin(admpws,Fottball_players,Basketball_players,swimmers)
+    elif ch=="2":signin(Passwords,users)
+    elif ch=="3":menu()
+    elif ch=="4": break
+    else :print("Wrong choise ")

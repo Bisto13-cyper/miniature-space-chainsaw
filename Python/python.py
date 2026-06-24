@@ -182,7 +182,6 @@ True or False
 
 .isdisjoint(): هل المجموعتين "منفصلتين" تماماً؟ (يعني مفيش بينهم أي تقاطع أو عيش وملح.. لو مفيش مشترك ترجع True).
 
-"""
 
 import time
 import os
@@ -207,4 +206,22 @@ for i in range(10):
 
 print("\n💃 تعبت وهبطت خلاص يا هندسة.. اروح اكل بستوت بقا!")
 see={1,2}
+"""
 
+
+text=input("Add text  ").lower()
+text=text.split(" ")
+F=len(text)
+text=set(text)
+if F==len(text):print("All words are unique")
+else : print("There are duplicates")
+
+login={"Ahmed","Akrm","Mohamed","Fatma"}
+while True:
+    newlogin=input("Enter your username      ")
+    if newlogin in login: 
+        print("Name is used !")
+        continue
+    else :
+        login.add(login)
+        break
