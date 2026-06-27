@@ -204,8 +204,9 @@ while True:
     else:
         print("Wrong Input ") """
 #Set
-def admin(pas,football,basket,swim):
-    while True:
+def admin(pas,users:dict,football,basket,swim,Want:dict):
+    allowed=True
+    while allowed:
         if pas=="":
             print("Hello admin sign in ")
             pas=input("Enter new password ")
@@ -213,21 +214,76 @@ def admin(pas,football,basket,swim):
         print("Enter password ")
         chpas=input("")
         if pas==chpas :
-            while True:
+            while allowed:
+                On=""
+                if not len(Want)==1: On="●" 
                 print("Hello admin ")
+                S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n0-Exit  ")
+                if S=="0":allowed=False
+                match S :
+                    case "1":
+                        print("F=football\tB=Basketball\tS=Swimming")
+                        for X in users.keys():
+                            F=B=S=""
+                            if X in football:F="F"
+                            if X in basket:B="B"
+                            if X in swim:S="S"
+                            print(f"Name: {X}  Sub in: {F}\t\t\t{B}\t\t\t{S}")
         else :
             print("wrong pasword")
             continue
-def menu():
+    return pas
+def menu(users:dict,foot:set,basket:set,swim:set,want:set):
+    allowed=False
+    user=""
     while True:
         print("Enter username ")
-        user=input()
-        
-def signin(Pas:dict,user:list):
+        user=input().strip()
+        if user in users.keys():
+            print("Enter your Password ")
+            che=input("")
+            if che==users[user] :
+                allowed=True 
+                break 
+            else:
+                print("Wrong password please try again ")
+                continue
+        else:
+            print("Username isn't found !")
+            continue
+    while allowed :
+        F=B=S="Subscribed"
+        if not user in foot:F="Football(1)"
+        if not user in basket:B="Basketball(2)"
+        if not user in swim:S="Swimming(3)"
+        print(f"Hello {user} To Bisto sportsclub ")
+        c=input("Select What do you need \n1-subscripe new hoppy\n0-Exit ").strip()
+        if c=="0":break
+        match c:
+            case "1":
+                print(f"{F}\n{B}\n{S}")
+                S=input("Select")
+                if not user in foot and S=="1":
+                    print("Enter Massage why and what's your skills and if you're accepted we will send to You(Warn!) (if you already have setn massage it will be deleted))")
+                    ms=input("")
+                    want[user]=ms+"'Football'"
+                    print("Thanks ><")
+                if not user in basket and S=="2":
+                    print("Enter Massage why and what's your skills and if you're accepted we will send to You (Warn!) (if you already have setn massage it will be deleted))")
+                    ms=input("")
+                    want[user]=ms+"'Basketball'"
+                    print("Thanks ><")
+                if not user in swim and S=="3":
+                    print("Enter Massage why and what's your skills and if you're accepted we will send to You (Warn!) (if you already have setn massage it will be deleted))")
+                    ms=input("")
+                    want[user]=ms+"'Swimming'"
+                    print("Thanks ><")
+
+def signin(Pas:dict):
     print("Hello to new account")
     while True:
         name=input("Enter username     ").strip()
-        if name in user:
+        if name in Pas.keys():
             print("ueername is used enter another username")
             continue
         print("Enter new password ")
@@ -235,22 +291,22 @@ def signin(Pas:dict,user:list):
         if pas=="":
             print("weak password try again")
             continue
-        Passwords[name]=pas
+        users[name]=pas
         print("Sign in successfully ")
         break
 
 
-users=[]
 swimmers={}
 Basketball_players={}
-Fottball_players={}
-Passwords={"name":"password"}
+Football_players={}
+users={"name":"password"}
+believes={"name":"Massage"}
 admpws=""
 while True:
     print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login \n4-exit")
     ch=input("").strip()
-    if ch=="1":admin(admpws,Fottball_players,Basketball_players,swimmers)
-    elif ch=="2":signin(Passwords,users)
-    elif ch=="3":menu()
+    if ch=="1":pas=admin(admpws,users,Football_players,Basketball_players,swimmers,believes)
+    elif ch=="2":signin(users)
+    elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes)
     elif ch=="4": break
     else :print("Wrong choise ")
