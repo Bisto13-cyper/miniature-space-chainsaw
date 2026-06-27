@@ -204,7 +204,56 @@ while True:
     else:
         print("Wrong Input ") """
 #Set
-def admin(pas,users:dict,football,basket,swim,Want:dict):
+def Show(player:set):
+    for X in player:
+        print(X)
+def Show2(player1:set,player2:set,name1:str,name2:str):
+    player=player1&player2
+    player1-=player
+    player2-=player
+    for Z in player:
+        print(f"{Z}   ({name1})({name2})")
+    for X in player1:
+        print(f"{X}   ({name1})")
+    for Y in player2:
+        print(f"{Y}   ({name2})")
+def Show3(F:set,B:set,S:set):
+    A=F&B&S
+    F-=A
+    B-=A
+    S-=A
+    for X in A:
+        print(f"{X}  (Football)(Basketball)(Swimming)")
+    FB=F&B
+    for X in FB:
+        print(f"{X}  (Football)(Basketball)")
+    FS=F&S
+    for X in FS:
+        print(f"{X}  (Football)(Swimming)")
+    SB=S&B
+    for X in SB:
+        print(f"{X}  (Basketball)(Swimming)")
+    F-=FB
+    F-=FS
+    for X in F:
+        print(f"{X}  (Football)")
+    B-=FB
+    B-=SB
+    for X in B:
+        print(f"{X}  (Basketball)")
+    S-=FS
+    S-=SB
+    for X in S:
+        print(f"{X}  (Swimming)")
+def Showshare2(player1:set,player2:set):
+    player=player1&player2
+    for X in player:
+        print(X)
+def Showshare3(F:set,B:set,S:set):
+    A=F&B&S
+    for X in A:
+        print(X)
+def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
     allowed=True
     while allowed:
         if pas=="":
@@ -219,7 +268,9 @@ def admin(pas,users:dict,football,basket,swim,Want:dict):
                 if not len(Want)==1: On="●" 
                 print("Hello admin ")
                 S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n0-Exit  ")
-                if S=="0":allowed=False
+                if S=="0":
+                    return pas
+                    allowed=False
                 match S :
                     case "1":
                         print("F=football\tB=Basketball\tS=Swimming")
@@ -228,11 +279,86 @@ def admin(pas,users:dict,football,basket,swim,Want:dict):
                             if X in football:F="F"
                             if X in basket:B="B"
                             if X in swim:S="S"
-                            print(f"Name: {X}  Sub in: {F}\t\t\t{B}\t\t\t{S}")
+                            print(f"Name: {X}  \t\t\tSub in: {F}\t\t\t{B}\t\t\t{S}")
+                    case "2":
+                        print("Football  (1)\nBasketball  (2)\nSwimming   (3)\nShared in two sport   (4)\nShared in all sports  (5)\nSubscriber in two sport   (6)\nAll players(7)")
+                        Se=input("")
+                        match Se:
+                            case "1":
+                                print("Football Players: ")
+                                Show(football.copy())
+                            case "2":
+                                print("Basketball Players: ")
+                                Show(basket.copy())
+                            case "3":
+                                print("Swimming Players: ")
+                                Show(swim.copy())
+                            case "6":
+                                print('Football "1"  Basketball "2"  Swimming"3"  ')
+                                while True:
+                                    S1=input("Select first  <").strip()
+                                    if  not (S1=="1" or S1=="2" or S1=="3"):
+                                        print("Wrong input")
+                                        continue
+                                    match S1:
+                                        case "1":
+                                            S1=football.copy()
+                                            n1="Football"
+                                        case "2":
+                                            S1=basket.copy()
+                                            n1="Basketball"
+                                        case "3":
+                                            S1=swim.copy()
+                                            n1="Swimming"
+                                    break
+                                while True:
+                                    S2=input("Select second  <").strip()
+                                    if  not (S2=="1" or S2=="2" or S2=="3") or S1==S2:
+                                        print("Wrong input")
+                                        continue
+                                    match S2:
+                                        case "1":
+                                            S2=football.copy()
+                                            n2="Football"
+                                        case "2":
+                                            S2=basket.copy()
+                                            n2="Basketball"
+                                        case "3":
+                                            S2=swim.copy()
+                                            n2="Swimming"
+                                    break
+                                Show2(S1,S2,n1,n2)
+                            case "5":
+                                print("Accounts how subscribe in all sports:  ")
+                                Showshare3(football,basket,swim)
+                            case "4":
+                                print('Football "1"  Basketball "2"  Swimming"3"  ')
+                                while True:
+                                    S1=input("Select first  <").strip()
+                                    if  not (S1=="1" or S1=="2" or S1=="3"):
+                                        print("Wrong input")
+                                        continue
+                                    match S1:
+                                        case "1":S1=football.copy()
+                                        case "2":S1=basket.copy()
+                                        case "3":S1=swim.copy()
+                                    break
+                                while True:
+                                    S2=input("Select second  <").strip()
+                                    if  not (S2=="1" or S2=="2" or S2=="3") or S1==S2:
+                                        print("Wrong input")
+                                        continue
+                                    match S2:
+                                        case "1":S2=football.copy()
+                                        case "2":S2=basket.copy()
+                                        case "3":S2=swim.copy()
+                                    break
+                                Showshare2(S1,S2)
+                            case "7":
+                                Show3(football.copy(),basket.copy(),swim.copy())
         else :
             print("wrong pasword")
             continue
-    return pas
 def menu(users:dict,foot:set,basket:set,swim:set,want:set):
     allowed=False
     user=""
@@ -262,7 +388,7 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:set):
         match c:
             case "1":
                 print(f"{F}\n{B}\n{S}")
-                S=input("Select")
+                S=input("Select          ").strip()
                 if not user in foot and S=="1":
                     print("Enter Massage why and what's your skills and if you're accepted we will send to You(Warn!) (if you already have setn massage it will be deleted))")
                     ms=input("")
@@ -278,7 +404,7 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:set):
                     ms=input("")
                     want[user]=ms+"'Swimming'"
                     print("Thanks ><")
-
+    return pas
 def signin(Pas:dict):
     print("Hello to new account")
     while True:
@@ -296,9 +422,9 @@ def signin(Pas:dict):
         break
 
 
-swimmers={}
-Basketball_players={}
-Football_players={}
+swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
+Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
+Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
 users={"name":"password"}
 believes={"name":"Massage"}
 admpws=""
