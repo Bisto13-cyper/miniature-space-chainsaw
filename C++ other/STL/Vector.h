@@ -6,9 +6,9 @@ std::vector<std::string> ToDo;
 std::vector<std::string>old;
 std::vector<std::string> done;
 std::string key;
-bool save;
+bool rev,save,want;
 public:
-List (std::string k){key=k; save=true;}
+List (std::string k):key(k){}
 void saving(bool S){save=S;}
 bool issave(){return save;}
 void add(std::string added){ToDo.emplace_back(added);}
@@ -29,4 +29,9 @@ void setkey(std::string k){key=k;}
 bool found(int ind);
 int size(){return ToDo.size();}
 void clearmemory(){done.shrink_to_fit();ToDo.shrink_to_fit();old.shrink_to_fit();}
+std::string next(){return ToDo.front();}
+void reverse(bool reve){rev=reve;}
+void setwant(int Do,int doned){ToDo.reserve(Do);done.reserve(doned); want=true;}
+void showtask(){}
+void showtaskdone(){}
 };

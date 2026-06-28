@@ -32,7 +32,7 @@ else {std::cout<<"Wrong Password";return;}
 }
 std::cout<<"Hello to "<<list->getkey()<<"To Do list \n";
 while(true){
-std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n-0 Exit\n";
+std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n12-show next task \n-0 Exit\n";
 int ch=getInt("");
 if (ch==0) break;
 if((ch==2||ch==3||ch==4)&&list->Tempty()){std::cout<<"Add new tasks first \n"; continue;}
@@ -85,6 +85,7 @@ break;
 case 10:list->clearmemory();
 break;
 case 11:set(list,Pas);
+case 12:std::cout<<"Next Task is {"<<list->next()<<"}\n";
 }
 
 
@@ -96,7 +97,7 @@ while(true){
 std::cout<<"What do want \n1-edit list name \n2set default save deletes \n3-";
 if(Pas=="")std::cout<<"set list Password\n";
 else std::cout<<"edit list Password\n";
-std::cout<<"4-clear list !\n";
+std::cout<<"4-show tasks default \n5-set goal \n6-clear list !\n";
 int ch=getInt("");
 if(ch==0){break;}
 switch (ch){
@@ -123,7 +124,22 @@ std::getline(std::cin,MS);
 if(MS==pas){Pas=pas;std::cout<<"Done \n";}
 else std::cout<<"Wrong !\n";
 }break;
-case 4:list->clear(); Pas="";
+case 4:{
+std::cout<<"Do want see Task from (start to end [1]) Or (end to start[2])\n";
+int R=getInt("");
+if(R==1){list->reverse(false);}
+else if(R==2){list->reverse(true);}
+else std::cout<<"Wrong Input \n";
+}
+case 5:{
+std::cout<<"How many tasks you'll add?\n";
+int add=getInt("");
+std::cout<<"How many task you wanna done\n";
+int done=getInt("");
+list->setwant(add,done);
+}
+
+case 6:list->clear(); Pas="";
 }
 }
 }
