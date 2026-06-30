@@ -356,10 +356,38 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                                 Showshare2(S1,S2)
                             case "7":
                                 Show3(football.copy(),basket.copy(),swim.copy())
-        else :
+                    case "3":
+                        time={"Name":"Massage"}
+                        counter=1
+                        for name in Want.keys():
+                            print(f"{name} Want to enter to {Want[name][-12:-1]}")
+                            print(f"Massge is [{Want [name]}]")
+                            acces=input("Do you want accept them? (Y/N)  <").strip().lower()
+                            if acces=="y":
+                                print("accepted Done !")
+                                time[str(counter)+"-"+name+"(Suc)"]=Want[name]
+                                counter+=1
+                            else:
+                                print("Deind Done !")
+                                time[str(counter)+"-"+name+"(Fal)"]=Want[name]
+                                counter+=1
+                        for last in time.keys():
+                            print(f"{last}")
+                            sure=input("Are you sure?(y/n)").strip().lower()
+                            if sure=="y":
+                                print("Great !!")
+                                #test here and up
+                                for name in time.keys():
+                                    name=name[2:len(name)-4]
+                                    if time[name][-12:-1].strip().lower().strip("'")=="football":football.add(name)
+                                    elif time[name][-12:-1].strip().lower().strip("'")=="basketball":basket.add(name)
+                                    elif time[name][-12:-1].strip().lower().strip("'")=="swimming":swim.add(name)
+                                    else :print(f"{name} Have an error")
+                                    Want.pop(name)
+        else : 
             print("wrong pasword")
             continue
-def menu(users:dict,foot:set,basket:set,swim:set,want:set):
+def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
     allowed=False
     user=""
     while True:
@@ -379,20 +407,25 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:set):
             continue
     while allowed :
         F=B=S="Subscribed"
-        if not user in foot:F="Football(1)"
-        if not user in basket:B="Basketball(2)"
-        if not user in swim:S="Swimming(3)"
+        
+        if not user in foot:F="(1)"
+        if not user in basket:B="(2)"
+        if not user in swim:S="(3)"
         print(f"Hello {user} To Bisto sportsclub ")
         c=input("Select What do you need \n1-subscripe new hoppy\n0-Exit ").strip()
         if c=="0":break
+        if user in want.keys()and c=="1":
+            print("You've already sent your Blieve  wait until response ")
+            continue
         match c:
             case "1":
-                print(f"{F}\n{B}\n{S}")
+                
+                print(f"Football{F}\nBasketball{B}\nSwimming{S}")
                 S=input("Select          ").strip()
                 if not user in foot and S=="1":
                     print("Enter Massage why and what's your skills and if you're accepted we will send to You(Warn!) (if you already have setn massage it will be deleted))")
                     ms=input("")
-                    want[user]=ms+"'Football'"
+                    want[user]=ms+"'Football'  "
                     print("Thanks ><")
                 if not user in basket and S=="2":
                     print("Enter Massage why and what's your skills and if you're accepted we will send to You (Warn!) (if you already have setn massage it will be deleted))")
@@ -402,9 +435,8 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:set):
                 if not user in swim and S=="3":
                     print("Enter Massage why and what's your skills and if you're accepted we will send to You (Warn!) (if you already have setn massage it will be deleted))")
                     ms=input("")
-                    want[user]=ms+"'Swimming'"
+                    want[user]=ms+"'Swimming'  "
                     print("Thanks ><")
-    return pas
 def signin(Pas:dict):
     print("Hello to new account")
     while True:
@@ -426,7 +458,7 @@ swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
 Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
 users={"name":"password"}
-believes={"name":"Massage"}
+believes=dict()
 admpws=""
 while True:
     print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login \n4-exit")
