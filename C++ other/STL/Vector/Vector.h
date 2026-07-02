@@ -25,13 +25,18 @@ void clearD (){done.clear();}
 void clearO(){old.clear();}
 void clear(){ToDo.clear();clearO();key="";clearD();}
 std::string getkey(){return key;}
+std::string gettext(int);
 void setkey(std::string k){key=k;}
 bool found(int ind);
 int size(){return ToDo.size();}
 void clearmemory(){done.shrink_to_fit();ToDo.shrink_to_fit();old.shrink_to_fit();}
 std::string next(){return ToDo.front();}
-void reverse(bool reve){rev=reve;}
+std::string last(){return ToDo.back();}
+void reverse(bool r){rev=r;}
 void setwant(int Do,int doned){ToDo.reserve(Do);done.reserve(doned); want=true;}
-void showtask(){}
-void showtaskdone(){}
+void showtask();
+void showtaskdone();
+std::vector<std::string> search(std::string); 
+void edit(int,std::string);
+void setpro(int,int);
 };

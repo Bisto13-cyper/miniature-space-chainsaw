@@ -3,6 +3,7 @@
 #include <limits>
 #include "menu.h"
 #include "Vector.h"
+#include<algorithm>
 
 int getInt(const std::string& prompt) {
 int value;
@@ -32,7 +33,7 @@ else {std::cout<<"Wrong Password";return;}
 }
 std::cout<<"Hello to "<<list->getkey()<<"To Do list \n";
 while(true){
-std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n12-show next task \n-0 Exit\n";
+std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n12-show next task \n13-show last task\n14-edit task\n15-search for task \n16-sorting tasks\n-0 Exit\n";
 int ch=getInt("");
 if (ch==0) break;
 if((ch==2||ch==3||ch==4)&&list->Tempty()){std::cout<<"Add new tasks first \n"; continue;}
@@ -86,6 +87,51 @@ case 10:list->clearmemory();
 break;
 case 11:set(list,Pas);
 case 12:std::cout<<"Next Task is {"<<list->next()<<"}\n";
+case 13:std::cout<<"last Task is {"<<list->last()<<"}\n";
+case 14:{
+    int index;
+list->show();
+    std::cout << "Enter task number to edit: ";
+     index=getInt("");
+    if(list->found(index-1)){std::cout<<"Not found \n"; break;}
+    std::cout << "Current Text: " << list->gettext(index-1) << "\n";
+    
+    std::cout << "Enter the new text: ";
+    std::string newText;
+    std::getline(std::cin, newText);
+    
+    list->edit(index-1, newText);
+    std::cout << "Task updated successfully!\n";
+}break;
+
+case 15:{
+std::cout<<"Enter words to find them \n";
+std::string target;
+std::getline(std::cin, target);
+std::vector<std::string>found=list->search(target);
+if (found.empty()) std::cout<<"found No task \n";
+else {
+int num=0;
+for(auto X:found){
+std::cout<<num<<"-"<<X;
+}
+}
+
+}break;
+case 16:{
+std::cout<<"Enter 0 to exit \n";
+while(true){
+list->show();
+int s=getInt("You want task Number ... ");
+if (s==0)break;
+int d=getInt("To be Number ... ");
+if (d==0)break;
+list->setpro(s-1,d-1);
+}
+
+
+}
+
 }
 
 
@@ -96,7 +142,7 @@ std::cout<<"Hello Admin list to list settings \n";
 while(true){
 std::cout<<"What do want \n1-edit list name \n2set default save deletes \n3-";
 if(Pas=="")std::cout<<"set list Password\n";
-else std::cout<<"edit list Password\n";
+else std::cout<<"edit list Password or delete it\n";
 std::cout<<"4-show tasks default \n5-set goal \n6-clear list !\n";
 int ch=getInt("");
 if(ch==0){break;}
@@ -116,8 +162,9 @@ else std::cout<<"Wrong Input \n";
 break;
 case 3:{
 std::string MS,pas;
-std::cout<<"Enter new password  exit(0)\n ";
+std::cout<<"Enter new password  exit(0) delete current password (1)\n ";
 if(pas=="0") break;
+if(pas=="1") {pas="";std::cout<<"Deleted!\n";}
 std::getline(std::cin,pas);
 std::cout<<"Enter again \n";
 std::getline(std::cin,MS);
@@ -146,7 +193,7 @@ case 6:list->clear(); Pas="";
 void menu(std::vector <List*> lists){
 int ch;
 while(true){
-std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists \n4-clear cache \n0-exit\n";
+std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n0-exit\n";
 ch=getInt("");
 if(ch==0) break;
 if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
@@ -159,6 +206,7 @@ switch (ch){
          List* newl=new List(name);
         lists.push_back(newl);
         std::cout<<"Adeed !\n";
+        std::sort(lists.begin(),lists.end());
     }
     break;
     case 2:{
@@ -186,8 +234,39 @@ break;
     break;
     case 4: 
 for (auto it:lists){it->clearmemory();}
-}
-}
-for(auto x: lists){delete x;}
+case 5:
+    for (auto x:lists){
+    std::cout<<x->getkey()<<"\n";
+    }
+std::cout<<"Select two lists to swap \n";
+int l1=getInt("First: ");
+int l2=getInt("Second: ");
+std::swap(lists[l1-1],lists[l2-1]);
+case 6:{
+    int i=1;
+    for (auto x:lists){
+    std::cout<<i<<"-"<<x->getkey()<<"\n";
+    i++;
+    }
+std::cout<<"Which list you wanna edit it \n";
+int edit=getInt("");
+std::string Edit;
+std::cout<<"Enter new name \n";
+std::getline(std::cin,Edit);
+lists[edit-1]->setkey(Edit);
 
+}
+case 7:
+int i=1;
+    for (auto x:lists){
+    std::cout<<i<<"-"<<x->getkey()<<"\n";
+    i++;
+    }
+std::cout<<"Which list you wanna delete\n";
+int del=getInt("");
+auto it=lists.begin()+(del-1);
+lists.erase(it);
+}
+
+}
 }

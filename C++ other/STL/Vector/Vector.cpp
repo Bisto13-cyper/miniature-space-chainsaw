@@ -74,17 +74,44 @@ std::cout<<"You didn't finish "<<ToDo.size();
 if(want)std::cout<<" from "<<ToDo.capacity();
 std::cout<<"\n";
 }
-
 void List::showtaskdone(){
     std::cout<<"You finished "<<done.size();
     if(want)std::cout<<" from "<<ToDo.capacity();
 std::cout<<"\n";
 }
+std::vector<std::string> List:: search(std::string target){
+std::vector<std::string> found;
+auto start=ToDo.begin();
+while(start!=ToDo.end()){
+auto it=std::find(start,ToDo.end(),target);
+found.push_back(*it);
+start=it;
+}
+return found;
+}
+std::string List:: gettext(int index){
+try{
+ToDo.at(index);
+}
+catch(const std::out_of_range& e){std::cout<<"Not found\n";}
+return ToDo.at(index);
+}
+void List:: edit(int index,std::string Edit){
+auto it =ToDo.begin()+index;
+ToDo.erase(it);
+ToDo.insert(it,Edit);
+
+}
+void List::setpro(int s,int d){
+auto T1=ToDo.begin()+s;
+auto T2=ToDo.begin()+d;
+std::iter_swap(ToDo.begin() + s, ToDo.begin() + d);
+}
 
 
 
 
-//add sorting searching front() end() undo 
+//add file handling them try Every thing
 void vectorsexplain(){
 std::vector<int> A;
 std::vector <int>B;
