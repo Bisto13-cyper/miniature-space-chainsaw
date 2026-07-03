@@ -265,7 +265,7 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
         if pas==chpas :
             while allowed:
                 On=""
-                if not len(Want)==1: On="●" 
+                if not len(Want)==0: On="●" 
                 print("Hello admin ")
                 S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n0-Exit  ")
                 if S=="0":
@@ -357,7 +357,7 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                             case "7":
                                 Show3(football.copy(),basket.copy(),swim.copy())
                     case "3":
-                        time={"Name":"Massage"}
+                        time=dict()
                         counter=1
                         for name in Want.keys():
                             print(f"{name} Want to enter to {Want[name][-12:-1]}")
@@ -371,19 +371,50 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                                 print("Deind Done !")
                                 time[str(counter)+"-"+name+"(Fal)"]=Want[name]
                                 counter+=1
-                        for last in time.keys():
-                            print(f"{last}")
+                        while True:
+                            for last in time:
+                                print(f"{last}")
                             sure=input("Are you sure?(y/n)").strip().lower()
                             if sure=="y":
                                 print("Great !!")
-                                #test here and up
+                                
                                 for name in time.keys():
-                                    name=name[2:len(name)-4]
-                                    if time[name][-12:-1].strip().lower().strip("'")=="football":football.add(name)
-                                    elif time[name][-12:-1].strip().lower().strip("'")=="basketball":basket.add(name)
-                                    elif time[name][-12:-1].strip().lower().strip("'")=="swimming":swim.add(name)
+                                    #try here
+                                    if name[-4:-1].strip=="Fal":pass
+                                    elif time[name][-12:-1].strip().lower().strip("'")=="football":football.add(name[2:len(name)-5])
+                                    elif time[name][-12:-1].strip().lower().strip("'")=="basketball":basket.add(name[2:len(name)-5])
+                                    elif time[name][-12:-1].strip().lower().strip("'")=="swimming":swim.add(name[2:len(name)-5])
                                     else :print(f"{name} Have an error")
-                                    Want.pop(name)
+                                    Want.pop(name[2:len(name)-5])
+                                break
+                            elif sure=="n":
+                                while True:
+                                    print("1-See massege again   2-retry someone 0-exit")
+                                    notsure=input("")
+                                    if notsure=="1":
+                                        for last in time:
+                                            print(f"{last}")
+                                        M=input("Select who.(Them name) ").strip()
+                                        if M in Want:
+                                            print(f"Them massege is:{Want[M]}")
+                                            continue
+                                        else:
+                                            print("Wrong name")
+                                            continue
+                                    elif notsure=="2":
+                                        for last in time:
+                                            print(f"{last}")
+                                        M=input("Select who.(Them name) ").strip()
+                                        #see here
+                                        """if M in Want:
+                                            
+                                            print("He succeeded" if M[-4:-1]=="Fal" else "He banned")
+                                            if M[-4:-1]=="Fal":M[-4:-1]=="Suc"
+                                            elif M[-4:-1]=="(Suc)":M[-4:-1]=="Fal"
+                                            continue"""
+                                    elif notsure=="0":break
+                                
+                            else:print("Wrong Input")
         else : 
             print("wrong pasword")
             continue
@@ -416,6 +447,9 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
         if c=="0":break
         if user in want.keys()and c=="1":
             print("You've already sent your Blieve  wait until response ")
+            continue
+        if c=="1" and len(want)>=9:
+            print("Hobby isn't found right now try again later")
             continue
         match c:
             case "1":
@@ -459,11 +493,12 @@ Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
 users={"name":"password"}
 believes=dict()
+
 admpws=""
 while True:
     print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login \n4-exit")
     ch=input("").strip()
-    if ch=="1":pas=admin(admpws,users,Football_players,Basketball_players,swimmers,believes)
+    if ch=="1":admpws=admin(admpws,users,Football_players,Basketball_players,swimmers,believes)
     elif ch=="2":signin(users)
     elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes)
     elif ch=="4": break
