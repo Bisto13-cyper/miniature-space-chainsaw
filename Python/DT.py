@@ -271,6 +271,9 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                 if S=="0":
                     return pas
                     allowed=False
+                if S=="3" and len(Want)==0:
+                    print("There is no believes right now")
+                    continue
                 match S :
                     case "1":
                         print("F=football\tB=Basketball\tS=Swimming")
@@ -377,13 +380,16 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                             sure=input("Are you sure?(y/n)").strip().lower()
                             if sure=="y":
                                 print("Great !!")
-                                
+                                x,y,checkcount=2,12,1
                                 for name in time.keys():
                                     #try here
-                                    if name[-4:-1].strip=="Fal":pass
-                                    elif time[name][-12:-1].strip().lower().strip("'")=="football":football.add(name[2:len(name)-5])
-                                    elif time[name][-12:-1].strip().lower().strip("'")=="basketball":basket.add(name[2:len(name)-5])
-                                    elif time[name][-12:-1].strip().lower().strip("'")=="swimming":swim.add(name[2:len(name)-5])
+                                    if checkcount%10==0:
+                                        x+=1
+                                        y+=1
+                                    if name[-4:-1].strip()=="Fal":pass
+                                    elif time[name][-y:].strip().lower().strip("'")=="football":football.add(name[x:len(name)-5])
+                                    elif time[name][-y:].strip().lower().strip("'")=="basketball":basket.add(name[x:len(name)-5])
+                                    elif time[name][-y:].strip().lower().strip("'")=="swimming":swim.add(name[x:len(name)-5])
                                     else :print(f"{name} Have an error")
                                     Want.pop(name[2:len(name)-5])
                                 break
@@ -404,14 +410,21 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                                     elif notsure=="2":
                                         for last in time:
                                             print(f"{last}")
-                                        M=input("Select who.(Them name) ").strip()
-                                        #see here
-                                        """if M in Want:
-                                            
-                                            print("He succeeded" if M[-4:-1]=="Fal" else "He banned")
-                                            if M[-4:-1]=="Fal":M[-4:-1]=="Suc"
-                                            elif M[-4:-1]=="(Suc)":M[-4:-1]=="Fal"
-                                            continue"""
+                                        N=input("Select who.(Them number) ").strip()
+                                        try :
+                                            N=int(N)
+                                        except:
+                                            print("Plaese enter number")
+                                            continue
+                                        if N>len(time) or N<=0:
+                                            print("Enter right number")
+                                            continue
+                                        time=list(time.items())
+                                        print("He succeeded" if time[N-1][0][-4:-1]=="Fal" else "He banned")
+                                        if time[N-1][0][-4:]=="Fal":time[N-1][0]=time[N-1][0].replace("Fal","Suc")
+                                        elif time[N-1][0][-4:]=="Suc":time[N-1][0]=time[N-1][0].replace("Suc","Fal")                                    
+                                        time=dict(time)
+                                        continue
                                     elif notsure=="0":break
                                 
                             else:print("Wrong Input")
@@ -447,9 +460,6 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
         if c=="0":break
         if user in want.keys()and c=="1":
             print("You've already sent your Blieve  wait until response ")
-            continue
-        if c=="1" and len(want)>=9:
-            print("Hobby isn't found right now try again later")
             continue
         match c:
             case "1":
@@ -487,7 +497,7 @@ def signin(Pas:dict):
         print("Sign in successfully ")
         break
 
-
+#make captain, Ban,complain, massegs from admin to user
 swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
 Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}

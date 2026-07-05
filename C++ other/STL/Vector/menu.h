@@ -29,3 +29,4 @@ public:
 void listmenu(List* list);
 void set(List* list,std::string&);
 void menu(std::vector <List*> lists);
+void loaddata(std::vector <List*> lists);

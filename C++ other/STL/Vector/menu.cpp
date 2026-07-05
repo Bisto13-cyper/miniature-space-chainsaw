@@ -1,5 +1,6 @@
 #include<string>
 #include<iostream>
+#include<fstream>
 #include <limits>
 #include "menu.h"
 #include "Vector.h"
@@ -191,12 +192,15 @@ case 6:list->clear(); Pas="";
 }
 }
 void menu(std::vector <List*> lists){
+
+//check here
+loaddata(lists);
 int ch;
 while(true){
 std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n0-exit\n";
 ch=getInt("");
-if(ch==0) break;
-if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
+if(ch==0){ 
+std::getline(data, line)if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
 switch (ch){
     case 1 :{
         std::cout<<"Enter list's name\n";
@@ -270,3 +274,58 @@ lists.erase(it);
 
 }
 }
+void loaddata(std::vector<List*>& list){
+std::ifstream data("lists.txt");
+if (data.is_open()){
+std::string line;
+std::getline(data,line);
+if(line=="09996718"){
+while(true){
+std::getline(data,line,'|');
+List* newlist = new List(line);
+std::getline(data,line,'|');
+bool dat=false;
+if(line=="1")dat=true;
+newlist->reverse(dat);
+std::getline(data,line,'|');
+dat=false;
+if(line=="1")dat=true;
+newlist->saving(dat);
+std::getline(data,line);
+dat=false;
+if(line=="1")dat=true;
+newlist->addwant(dat);
+std::getline(data,line);
+while(std::getline(data, line),line!="Done:"){
+std::getline(data,line);
+newlist->add(line);
+}
+while(std::getline(data, line),line!="Old:"){
+std::getline(data,line);
+newlist->adddone(line);
+}
+while(std::getline(data, line),line!="End"){
+std::getline(data,line);
+newlist->addold(line);
+}
+list.push_back(newlist);
+std::getline(data,line);
+std::string check;
+std::getline(data,check);
+if(line=="09996710"&&check=="09996718")
+continue;
+else break;
+}
+
+}
+data.clear();
+data.close();
+
+}
+else
+std::cout<<"Error while reading the file \n";
+
+
+
+}
+

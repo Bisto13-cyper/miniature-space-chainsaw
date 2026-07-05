@@ -6,6 +6,7 @@
 #include <string>
 #include "Vector.h"
 #include "menu.h"
+#include<fstream>
 
 
 void List::show(){
@@ -107,6 +108,31 @@ auto T1=ToDo.begin()+s;
 auto T2=ToDo.begin()+d;
 std::iter_swap(ToDo.begin() + s, ToDo.begin() + d);
 }
+void List::savedata(){
+std::ofstream data("lists.txt",std::ios::app);
+if(data.is_open()){
+data<<"09996718\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
+data<<"ToDo:\n";
+for(auto it:ToDo){
+data<<it<<"\n";
+}
+data<<"Done:";
+for(auto it:done){
+data<<it<<"\n";
+}
+data<<"Old:";
+for(auto it:old){
+data<<it<<"\n";
+}
+data<<"End\n";
+data<<"09996710\n";
+data.close();
+}
+}
+void List::adddone(std::string don) 
+{done.push_back(don);}
+void List::addold(std::string ol)
+{old.push_back(ol);}
 
 
 

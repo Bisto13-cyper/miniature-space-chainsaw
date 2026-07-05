@@ -39,4 +39,9 @@ void showtaskdone();
 std::vector<std::string> search(std::string); 
 void edit(int,std::string);
 void setpro(int,int);
+void savedata();
+void addwant(bool w){want=w;}
+void adddone(std::string);
+void addold(std::string);
+~List(){ToDo.clear();done.clear();old.clear();}
 };
