@@ -200,7 +200,7 @@ while(true){
 std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n0-exit\n";
 ch=getInt("");
 if(ch==0){ 
-std::getline(data, line)if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
+if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
 switch (ch){
     case 1 :{
         std::cout<<"Enter list's name\n";
@@ -271,7 +271,7 @@ int del=getInt("");
 auto it=lists.begin()+(del-1);
 lists.erase(it);
 }
-
+}
 }
 }
 void loaddata(std::vector<List*>& list){
