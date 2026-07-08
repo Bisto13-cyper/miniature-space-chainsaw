@@ -253,7 +253,7 @@ def Showshare3(F:set,B:set,S:set):
     A=F&B&S
     for X in A:
         print(X)
-def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
+def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict,complains:list,favorites:list,masseges:dict):
     allowed=True
     while allowed:
         if pas=="":
@@ -267,7 +267,7 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                 On=""
                 if not len(Want)==0: On="●" 
                 print("Hello admin ")
-                S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n0-Exit  ")
+                S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n4-Ban \n5-read complains \n0-Exit  ")
                 if S=="0":
                     return pas
                     allowed=False
@@ -381,15 +381,22 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                             if sure=="y":
                                 print("Great !!")
                                 x,y,checkcount=2,12,1
+                                sendmassege=lambda name:masseges[name]="You've accepted !"
                                 for name in time.keys():
                                     #try here
                                     if checkcount%10==0:
                                         x+=1
                                         y+=1
                                     if name[-4:-1].strip()=="Fal":pass
-                                    elif time[name][-y:].strip().lower().strip("'")=="football":football.add(name[x:len(name)-5])
-                                    elif time[name][-y:].strip().lower().strip("'")=="basketball":basket.add(name[x:len(name)-5])
-                                    elif time[name][-y:].strip().lower().strip("'")=="swimming":swim.add(name[x:len(name)-5])
+                                    elif time[name][-y:].strip().lower().strip("'")=="football":
+                                        football.add(name[x:len(name)-5])
+                                        sendmassege(name[x:len(name)-5])
+                                    elif time[name][-y:].strip().lower().strip("'")=="basketball":
+                                        basket.add(name[x:len(name)-5])
+                                        sendmassege(name[x:len(name)-5])
+                                    elif time[name][-y:].strip().lower().strip("'")=="swimming":
+                                        swim.add(name[x:len(name)-5])
+                                        sendmassege (name[x:len(name)-5])
                                     else :print(f"{name} Have an error")
                                     Want.pop(name[2:len(name)-5])
                                 break
@@ -428,10 +435,41 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict):
                                     elif notsure=="0":break
                                 
                             else:print("Wrong Input")
+                    case "4":
+                        i=1
+                        for Use in users:
+                            print(f"{i}:{Use}")
+                            i+=1
+                        user=input("Who will you ban it  " ).strip()
+                        if user in users.keys():
+                            print(f"Are you sure that you will ban ({user}) (y/n)")
+                            sure=input("").lower()
+                            if sure =="y":users.pop(user)
+                            else:print("Canceled!")
+                    case "5":
+                        
+                        comp=0
+                        while comp<len(complains):
+                            print(complains[comp])
+                            done=input("Delete(0) or save(1) or favorite(2) ").strip()
+                            if done=="0":
+                                complains.pop(comp)
+                                print("Deleted")
+                            elif done=="1":
+                                comp+=1
+                                print("Saved")
+                            elif done=="2":
+                                favorites.append(complains[comp])
+                                complains.pop(comp)
+                                print("Added")
+                            else:continue
+                            com=input("Read next (anything) or Exit(0)--")
+                            if com=="0":break
+                            
         else : 
             print("wrong pasword")
             continue
-def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
+def menu(users:dict,foot:set,basket:set,swim:set,want:dict,complains:list,masseges:dict):
     allowed=False
     user=""
     while True:
@@ -451,15 +489,20 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
             continue
     while allowed :
         F=B=S="Subscribed"
-        
+        theremasseges,there=False,""
+        if user in masseges:theremasseges,there=True,"●"
+        else:theremasseges,there=False,""
         if not user in foot:F="(1)"
         if not user in basket:B="(2)"
         if not user in swim:S="(3)"
         print(f"Hello {user} To Bisto sportsclub ")
-        c=input("Select What do you need \n1-subscripe new hoppy\n0-Exit ").strip()
+        c=input(f"Select What do you need \n1-subscripe new hoppy \n2-make a complaint \n3-see Massage{there} \n0-Exit ").strip()
         if c=="0":break
         if user in want.keys()and c=="1":
             print("You've already sent your Blieve  wait until response ")
+            continue
+        if not theremasseges and c=="3":
+            print("You don't have massegs")
             continue
         match c:
             case "1":
@@ -481,35 +524,69 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict):
                     ms=input("")
                     want[user]=ms+"'Swimming'  "
                     print("Thanks ><")
-def signin(Pas:dict):
-    print("Hello to new account")
-    while True:
-        name=input("Enter username     ").strip()
-        if name in Pas.keys():
-            print("ueername is used enter another username")
-            continue
-        print("Enter new password ")
-        pas=input()
-        if pas=="":
-            print("weak password try again")
-            continue
-        users[name]=pas
-        print("Sign in successfully ")
-        break
+            case "2":
+                print("Make your complaint Write What,Why,How and rating")
+                What=input("What's Wrong.    ").strip()
+                Why=input("Why this not good.    ").strip()
+                How=input("How can we help you.    ").strip()
+                rate=input("please rate our totaly service.    ").strip()
+                complains.append(f"What has done :{What} \n Why this is disappointing :{Why} \n How can you make abest service :{How} \n Rating :{rate}")
+            case "3":
+                #complete and test
+                print(masseges[user])
+                input("Delet or save?")
+def capmenu(captains:dict):
+    print
+def signin(Pas:dict,captains: dict):
+    print("Hello to new account Are you (a captain(1) or a trainer(2))")
+    U=input("")
+    if U=="1":
+        while True:
+            print("Hello Captain put your name and adress and age and Gender")
+            N=input("Name:  ").strip()
+            A=input("Age:  ").strip()
+            Ad=input("Adresse:  ").strip()
+            G=input("Gender:  ").strip()
+            if(G=="" or A=="" or N=="" or Ad=="" or not A.isdigit  ):
+                print("There is wrong in data please repeat")
+                continue
+            captains[N]=[int(A),Ad,G,False]
+            print("When we accept you we'll send to you")
+            break
+    if U=="2":
+        while True:
+            name=input("Enter username     ").strip()
+            if name in Pas.keys():
+                print("ueername is used enter another username")
+                continue
+            print("Enter new password ")
+            pas=input()
+            if pas=="":
+                print("weak password try again")
+                continue
+            users[name]=pas
+            print("Sign in successfully ")
+            break
 
-#make captain, Ban,complain, massegs from admin to user
+#  massegs from admin to user,everything for captain
 swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
 Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
-users={"name":"password"}
+users=dict()
+captains={
+    "Name":["Age","Adresse","Gender","Working or No"]
+}
 believes=dict()
-
+masseges=dict()
+complains=list()
+favoriteadmin=list()
 admpws=""
 while True:
-    print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login \n4-exit")
+    print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login as a trainer \n4-login as a captain\n5-exit")
     ch=input("").strip()
-    if ch=="1":admpws=admin(admpws,users,Football_players,Basketball_players,swimmers,believes)
-    elif ch=="2":signin(users)
-    elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes)
-    elif ch=="4": break
+    if ch=="1":admpws=admin(admpws,users,Football_players,Basketball_players,swimmers,believes,complains,favoriteadmin,masseges)
+    elif ch=="2":signin(users,captains)
+    elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes,complains,masseges)
+    elif ch=="4":capmenu(captains)
+    elif ch=="5": break
     else :print("Wrong choise ")

@@ -34,7 +34,7 @@ else {std::cout<<"Wrong Password";return;}
 }
 std::cout<<"Hello to "<<list->getkey()<<"To Do list \n";
 while(true){
-std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n12-show next task \n13-show last task\n14-edit task\n15-search for task \n16-sorting tasks\n-0 Exit\n";
+std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Show done tasks \n6-show deleted \n7-restart task \n8-clear done \n9-clear deleteed  \n10-clear list cache \n11-setings \n12-show next task \n13-show last task\n14-edit task\n15-search for task \n16-sorting tasks\n17-Save \n-0 Exit\n";
 int ch=getInt("");
 if (ch==0) break;
 if((ch==2||ch==3||ch==4)&&list->Tempty()){std::cout<<"Add new tasks first \n"; continue;}
@@ -132,7 +132,8 @@ list->setpro(s-1,d-1);
 
 
 }
-
+case 17:
+list->Savedata();
 }
 
 
@@ -195,9 +196,10 @@ void menu(std::vector <List*> lists){
 
 //check here
 loaddata(lists);
+
 int ch;
 while(true){
-std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n0-exit\n";
+std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n8-Save data \n9-Autosaving \n0-exit\n";
 ch=getInt("");
 if(ch==0){ 
 if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
@@ -270,6 +272,11 @@ std::cout<<"Which list you wanna delete\n";
 int del=getInt("");
 auto it=lists.begin()+(del-1);
 lists.erase(it);
+case 8:
+for(auto it:lists){
+it->Savedata();
+}
+
 }
 }
 }
@@ -281,8 +288,10 @@ std::string line;
 std::getline(data,line);
 if(line=="09996718"){
 while(true){
+    std::string id;
+std::getline(data,id,'|');
 std::getline(data,line,'|');
-List* newlist = new List(line);
+List* newlist = new List(line,stoi(id));
 std::getline(data,line,'|');
 bool dat=false;
 if(line=="1")dat=true;
@@ -318,7 +327,6 @@ else break;
 }
 
 }
-data.clear();
 data.close();
 
 }

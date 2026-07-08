@@ -108,10 +108,10 @@ auto T1=ToDo.begin()+s;
 auto T2=ToDo.begin()+d;
 std::iter_swap(ToDo.begin() + s, ToDo.begin() + d);
 }
-void List::savedata(){
+void List::savenewdate(){
 std::ofstream data("lists.txt",std::ios::app);
 if(data.is_open()){
-data<<"09996718\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
+data<<"09996718\n"<<id<<"|"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
 data<<"ToDo:\n";
 for(auto it:ToDo){
 data<<it<<"\n";
@@ -129,10 +129,72 @@ data<<"09996710\n";
 data.close();
 }
 }
+void List::printdata(std::ofstream &data){
+std::ofstream data("lists.txt",std::ios::app);
+if(data.is_open()){
+data<<id<<"|"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
+data<<"ToDo:\n";
+for(auto it:ToDo){
+data<<it<<"\n";
+}
+data<<"Done:";
+for(auto it:done){
+data<<it<<"\n";
+}
+data<<"Old:";
+for(auto it:old){
+data<<it<<"\n";
+data.close();
+}
+
+}
+}
 void List::adddone(std::string don) 
 {done.push_back(don);}
 void List::addold(std::string ol)
 {old.push_back(ol);}
+void List::savedatafrom(){
+    bool skipmode=false;
+std::string Idstr=std::to_string(id),line;
+std::ifstream old("lists.txt");
+std::ofstream current("temp.txt");
+if(!old||!current) return;
+while(std::getline(old,line)){
+if(line.find(Idstr)!=std::string::npos){
+printdata(current);
+skipmode=true;
+continue;
+}
+if(line.find("End")!=std::string::npos&&skipmode) skipmode=false;
+
+if(!skipmode) 
+current<<line<<"\n";
+}
+old.close();
+current. close();
+remove("lists.txt");
+rename("temp.txt","lists.txt");
+}
+void List::Savedata(){
+if(Idfound)
+savedatafrom();
+else
+savenewdate();
+ 
+}
+bool List::Idfound(){
+std::ifstream file("list.txt");
+std::string line,Idstr=std::to_string(id);
+while(std::getline(file,line)){
+if(line.find(Idstr)!=std::string::npos){
+    file.close();
+    return true;
+}
+}
+file.close();
+return false;
+}
+
 
 
 
