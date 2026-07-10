@@ -5,7 +5,19 @@
 #include "menu.h"
 #include "Vector.h"
 #include<algorithm>
-
+void creatlist(std::vector<List*>& lists){ 
+        std::cout<<"Enter list's name\n";
+        std::string name;
+        std::cin.ignore();
+        std::getline(std::cin,name);
+        for (auto it:lists){if(it->getkey()==name) 
+       { std::cout<<"Name is found\n"; return;}
+        }
+        List* newl=new List(name);
+        lists.push_back(newl);
+        std::cout<<"Adeed !\n";
+        //std::sort(lists.begin(),lists.end());
+}
 int getInt(const std::string& prompt) {
 int value;
 while (true) {
@@ -155,12 +167,12 @@ std::cout<<"Current name is :"<<list->getkey()<<" \n Enter new name\t\t ";
 std::getline(std::cin,N);
 list->setkey(N);
 }break;
-case 2: 
+case 2: {
 std::cout<<"When deleting task you want 1-save it in deleted 2-don't save it\n";
 int S=getInt("");
 if(S==1){list->saving(true); "New settings Saved \n";}
 else if(S==2){list->saving(false); "New settings Saved \n"; list->clearD();}
-else std::cout<<"Wrong Input \n";
+else std::cout<<"Wrong Input \n";}
 break;
 case 3:{
 std::string MS,pas;
@@ -180,6 +192,7 @@ if(R==1){list->reverse(false);}
 else if(R==2){list->reverse(true);}
 else std::cout<<"Wrong Input \n";
 }
+break;
 case 5:{
 std::cout<<"How many tasks you'll add?\n";
 int add=getInt("");
@@ -187,7 +200,7 @@ std::cout<<"How many task you wanna done\n";
 int done=getInt("");
 list->setwant(add,done);
 }
-
+break;
 case 6:list->clear(); Pas="";
 }
 }
@@ -195,25 +208,15 @@ case 6:list->clear(); Pas="";
 void menu(std::vector <List*> lists){
 
 //check here
-loaddata(lists);
 
 int ch;
 while(true){
 std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n8-Save data \n9-Autosaving \n0-exit\n";
 ch=getInt("");
-if(ch==0){ 
+if(ch==0){ break;}
 if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
 switch (ch){
-    case 1 :{
-        std::cout<<"Enter list's name\n";
-        std::string name;
-        std::cin.ignore();
-        std::getline(std::cin,name);
-         List* newl=new List(name);
-        lists.push_back(newl);
-        std::cout<<"Adeed !\n";
-        std::sort(lists.begin(),lists.end());
-    }
+    case 1 :creatlist(lists);
     break;
     case 2:{
             std::cout<<"Lists : "<<lists.size()<<" list \n";
@@ -222,7 +225,8 @@ switch (ch){
         std::cout<<I<<"-"<<x->getkey()<<"\n"; I++;
         }
         while (true){
-int ch=getInt("Select list  ");
+int ch=getInt("Select list  exit(0)");
+if (ch==0) break;
 if(ch>lists.size() || ch<=0){std::cout<<"Wrong list \n"; continue;}
 else {
 listmenu(lists[(ch-1)]);
@@ -231,23 +235,26 @@ break;
 }
     }
     break;
-    case 3:
+    case 3:{
         std::cout<<"Lists : "<<lists.size()<<" list \n";
         for (auto x:lists){
         std::cout<<x->getkey()<<"\n";
-}
+}}
     
     break;
     case 4: 
-for (auto it:lists){it->clearmemory();}
-case 5:
+{for (auto it:lists){it->clearmemory();}} std::cout<<"Done";
+break;
+case 5:{
     for (auto x:lists){
     std::cout<<x->getkey()<<"\n";
     }
+    
 std::cout<<"Select two lists to swap \n";
 int l1=getInt("First: ");
 int l2=getInt("Second: ");
-std::swap(lists[l1-1],lists[l2-1]);
+std::swap(lists[l1-1],lists[l2-1]);}
+break;
 case 6:{
     int i=1;
     for (auto x:lists){
@@ -256,13 +263,16 @@ case 6:{
     }
 std::cout<<"Which list you wanna edit it \n";
 int edit=getInt("");
+if (edit>lists.size()||edit<=0){break;}
 std::string Edit;
 std::cout<<"Enter new name \n";
+std::cin.ignore();
 std::getline(std::cin,Edit);
 lists[edit-1]->setkey(Edit);
 
 }
-case 7:
+break;
+case 7:{
 int i=1;
     for (auto x:lists){
     std::cout<<i<<"-"<<x->getkey()<<"\n";
@@ -270,17 +280,22 @@ int i=1;
     }
 std::cout<<"Which list you wanna delete\n";
 int del=getInt("");
+if (del>lists.size()||del<=0){break;}
 auto it=lists.begin()+(del-1);
-lists.erase(it);
-case 8:
+delete *it;
+lists.erase(it); std::cout<<"Deleteed!\n";
+}
+break;
+case 8:{
 for(auto it:lists){
 it->Savedata();
-}
+}}
+break;
 
 }
 }
 }
-}
+
 void loaddata(std::vector<List*>& list){
 std::ifstream data("lists.txt");
 if (data.is_open()){
@@ -289,9 +304,9 @@ std::getline(data,line);
 if(line=="09996718"){
 while(true){
     std::string id;
-std::getline(data,id,'|');
+std::getline(data,id);
 std::getline(data,line,'|');
-List* newlist = new List(line,stoi(id));
+List* newlist = new List(line,id);
 std::getline(data,line,'|');
 bool dat=false;
 if(line=="1")dat=true;

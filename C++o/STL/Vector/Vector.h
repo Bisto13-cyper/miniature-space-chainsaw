@@ -1,6 +1,8 @@
 #include <vector>
 #include <string>
 #include <random>
+#ifndef VECTOR_H  
+#define VECTOR_H  
 class List{
 private:
 inline static std::random_device rd;
@@ -10,7 +12,7 @@ std::vector<std::string> ToDo;
 std::vector<std::string>old;
 std::vector<std::string> done;
 std::string key;
-int id;
+std::string id;
 bool rev,save,want;
 
 bool Idfound();
@@ -18,8 +20,8 @@ void savenewdate();
 void savedatafrom();
 void printdata(std::ofstream &file);
 public:
-List (std::string k):key(k){}
-List (std::string k,int i):key(k){id=i;}
+List (std::string k):key(k){id=std::to_string(gen());}
+List (std::string k,std::string i):key(k){id=i;}
 void saving(bool S){save=S;}
 bool issave(){return save;}
 void add(std::string added){ToDo.emplace_back(added);}
@@ -56,3 +58,4 @@ void addold(std::string);
 void Savedata();
 ~List(){ToDo.clear();done.clear();old.clear();}
 };
+#endif
