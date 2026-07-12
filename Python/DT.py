@@ -267,7 +267,7 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict,complains:li
                 On=""
                 if not len(Want)==0: On="●" 
                 print("Hello admin ")
-                S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n4-Ban \n5-read complains \n0-Exit  ")
+                S=input(f"What do want  \n1-see accounts\n2-see players \n3-look at believes {On}\n4-Ban \n5-read complains \n6-send massege to someone \n0-Exit  ")
                 if S=="0":
                     return pas
                     allowed=False
@@ -381,7 +381,7 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict,complains:li
                             if sure=="y":
                                 print("Great !!")
                                 x,y,checkcount=2,12,1
-                                sendmassege=lambda name:masseges[name]="You've accepted !"
+                                sendmassege=lambda name:masseges[name].append("You've accepted !")
                                 for name in time.keys():
                                     #try here
                                     if checkcount%10==0:
@@ -465,7 +465,17 @@ def admin(pas,users:dict,football:set,basket:set,swim:set,Want:dict,complains:li
                             else:continue
                             com=input("Read next (anything) or Exit(0)--")
                             if com=="0":break
-                            
+                    case "6":
+                        for user in users.keys():
+                            print(users)
+                        print("Who is?")
+                        send=input("").strip()
+                        if send in users:
+                            mas=input("Enter massege     ")
+                            masseges[send].append(mas)
+                        else:print("Wrong name")
+                    
+                        
         else : 
             print("wrong pasword")
             continue
@@ -490,13 +500,13 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict,complains:list,masseg
     while allowed :
         F=B=S="Subscribed"
         theremasseges,there=False,""
-        if user in masseges:theremasseges,there=True,"●"
+        if len(masseges[user])>0:theremasseges,there=True,"●"
         else:theremasseges,there=False,""
         if not user in foot:F="(1)"
         if not user in basket:B="(2)"
         if not user in swim:S="(3)"
         print(f"Hello {user} To Bisto sportsclub ")
-        c=input(f"Select What do you need \n1-subscripe new hoppy \n2-make a complaint \n3-see Massage{there} \n0-Exit ").strip()
+        c=input(f"Select What do you need \n1-subscripe new hoppy \n2-make a complaint \n3-see Massage {there} \n0-Exit ").strip()
         if c=="0":break
         if user in want.keys()and c=="1":
             print("You've already sent your Blieve  wait until response ")
@@ -533,11 +543,19 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict,complains:list,masseg
                 complains.append(f"What has done :{What} \n Why this is disappointing :{Why} \n How can you make abest service :{How} \n Rating :{rate}")
             case "3":
                 #complete and test
-                print(masseges[user])
-                input("Delet or save?")
+                for mas in masseges[user]:
+                    while True:
+                        print(mas)
+                        print("Do want del(d)/save it(s)")
+                        wanted=input("").lower()
+                        if wanted=="d" or wanted=="del":
+                            masseges[user].remove(mas)
+                            break
+                        elif wanted=="s" or wanted=="save":break
+                        else:continue
 def capmenu(captains:dict):
     print
-def signin(Pas:dict,captains: dict):
+def signin(Pas:dict,captains: dict,masseges:dict):
     print("Hello to new account Are you (a captain(1) or a trainer(2))")
     U=input("")
     if U=="1":
@@ -565,10 +583,11 @@ def signin(Pas:dict,captains: dict):
                 print("weak password try again")
                 continue
             users[name]=pas
+            masseges[name]=["Wellcome to our club"]
             print("Sign in successfully ")
             break
 
-#  massegs from admin to user,everything for captain
+# everything for captain
 swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
 Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
@@ -585,7 +604,7 @@ while True:
     print("Hello To Bisto sportsclub Are you \n1-admin\n2-sign in \n3-login as a trainer \n4-login as a captain\n5-exit")
     ch=input("").strip()
     if ch=="1":admpws=admin(admpws,users,Football_players,Basketball_players,swimmers,believes,complains,favoriteadmin,masseges)
-    elif ch=="2":signin(users,captains)
+    elif ch=="2":signin(users,captains,masseges)
     elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes,complains,masseges)
     elif ch=="4":capmenu(captains)
     elif ch=="5": break
