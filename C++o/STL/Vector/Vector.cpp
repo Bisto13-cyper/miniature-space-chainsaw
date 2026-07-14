@@ -82,11 +82,11 @@ std::cout<<"\n";
 }
 std::vector<std::string> List:: search(std::string target){
 std::vector<std::string> found;
-auto start=ToDo.begin();
-while(start!=ToDo.end()){
-auto it=std::find(start,ToDo.end(),target);
-found.push_back(*it);
-start=it;
+int num=1;
+for(auto it:ToDo){
+if(it.find(target)!=std::string::npos) 
+found.push_back(std::to_string(num)+"-"+it);
+num++;
 }
 return found;
 }
@@ -114,15 +114,15 @@ if(data.is_open()){
 data<<"09996718\n"<<id<<"\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
 data<<"ToDo:\n";
 for(auto it:ToDo){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 }
 data<<"Done:\n";
 for(auto it:done){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 }
 data<<"Old:\n";
 for(auto it:old){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 }
 data<<"End\n";
 data<<"09996710\n";
@@ -134,15 +134,15 @@ if(data.is_open()){
 data<<id<<"\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
 data<<"ToDo:\n";
 for(auto it:ToDo){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 }
 data<<"Done:\n";
 for(auto it:done){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 }
 data<<"Old:\n";
 for(auto it:old){
-data<<it<<"\n";
+data<<it<<"\n*\n";
 data.close();
 }
 
@@ -194,7 +194,7 @@ file.close();
 return false;
 }
 
-
+//try search and sittings and file handling
 
 
 

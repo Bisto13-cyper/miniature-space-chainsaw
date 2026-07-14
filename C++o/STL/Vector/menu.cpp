@@ -54,7 +54,7 @@ if((ch==5||ch==8)&list->Dempty()) {std::cout<<"Add new done tasks first \n"; con
 if((ch==6||ch==9)&!list->issave()){std::cout<<"Delete file is turned off\n"; continue;}
 if((ch==6||ch==9)&list->Oempty()) {std::cout<<"Delete new tasks first \n"; continue;}
 if(ch==7&list->Dempty()&list->Oempty()){std::cout<<"No tasks to restart \n"; continue;}
-if(ch==8||ch==9||ch==10){
+if(ch==8||ch==9){
     std::cout<<"Are you sure to "<<Color::RED<<"Delete "<<Color::RESET<<"(y/n)\n";
     char S;
 std::cin>>S;
@@ -99,18 +99,22 @@ break;
 case 10:list->clearmemory();
 break;
 case 11:set(list,Pas);
+break;
 case 12:std::cout<<"Next Task is {"<<list->next()<<"}\n";
+break;
 case 13:std::cout<<"last Task is {"<<list->last()<<"}\n";
+break;
 case 14:{
     int index;
 list->show();
     std::cout << "Enter task number to edit: ";
      index=getInt("");
-    if(list->found(index-1)){std::cout<<"Not found \n"; break;}
+    if(!list->found(index-1)){std::cout<<"Not found \n"; break;}
     std::cout << "Current Text: " << list->gettext(index-1) << "\n";
     
     std::cout << "Enter the new text: ";
     std::string newText;
+    std::cin.ignore();
     std::getline(std::cin, newText);
     
     list->edit(index-1, newText);
@@ -120,20 +124,22 @@ list->show();
 case 15:{
 std::cout<<"Enter words to find them \n";
 std::string target;
+std::cin.ignore();
 std::getline(std::cin, target);
 std::vector<std::string>found=list->search(target);
 if (found.empty()) std::cout<<"found No task \n";
 else {
 int num=0;
 for(auto X:found){
-std::cout<<num<<"-"<<X;
+std::cout<<num<<"-"<<X<<"\n";
+num++;
 }
 }
 
 }break;
 case 16:{
-std::cout<<"Enter 0 to exit \n";
 while(true){
+std::cout<<"Enter 0 to exit \n";
 list->show();
 int s=getInt("You want task Number ... ");
 if (s==0)break;
@@ -143,9 +149,10 @@ list->setpro(s-1,d-1);
 }
 
 
-}
+}break;
 case 17:
 list->Savedata();
+std::cout<<Color::GREEN<<"Saved !\n"<<Color::RESET;
 }
 
 
@@ -320,17 +327,42 @@ dat=false;
 if(line=="1")dat=true;
 newlist->addwant(dat);
 std::getline(data,line);
-while(std::getline(data, line),line!="Done:"){
-std::getline(data,line);
-newlist->add(line);
+std::string add;
+while(std::getline(data, line)){
+if(line=="Done:"){ 
+    add="";
+    break;}
+if(line=="*") {
+    newlist->add(add);
+    add="";
+    continue;
 }
-while(std::getline(data, line),line!="Old:"){
-std::getline(data,line);
-newlist->adddone(line);
+if(!line.empty())
+add+=line+"\n";
 }
-while(std::getline(data, line),line!="End"){
-std::getline(data,line);
-newlist->addold(line);
+while(std::getline(data, line)){
+if(line=="Old:"){ 
+    add="";
+    break;}
+if(line=="*") {
+    newlist->add(add);
+    add="";
+    continue;
+}
+if(!line.empty())
+add+=line+"\n";
+}
+while(std::getline(data, line)){
+if(line=="End"){ 
+    add="";
+    break;}
+if(line=="*") {
+    newlist->add(add);
+    add="";
+    continue;
+}
+if(!line.empty())
+add+=line+"\n";
 }
 list.push_back(newlist);
 std::getline(data,line);
