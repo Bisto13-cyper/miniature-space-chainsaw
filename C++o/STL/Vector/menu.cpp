@@ -5,17 +5,24 @@
 #include "menu.h"
 #include "Vector.h"
 #include<algorithm>
+#include <filesystem>
+bool chrepet(const std::vector<List*>& lists,std::string name){ 
+    if(name.empty()){std::cout<<"Can't Add  space\n"; return false;}
+    for (const auto& it:lists){if(it->getkey()==name) 
+{ std::cout<<"Name is found\n"; return false;}
+        }
+    return true;
+}
 void creatlist(std::vector<List*>& lists){ 
         std::cout<<"Enter list's name\n";
         std::string name;
         std::cin.ignore();
         std::getline(std::cin,name);
-        for (auto it:lists){if(it->getkey()==name) 
-       { std::cout<<"Name is found\n"; return;}
-        }
+        if(!chrepet(lists,name)) return;
         List* newl=new List(name);
         lists.push_back(newl);
         std::cout<<"Adeed !\n";
+    
         //std::sort(lists.begin(),lists.end());
 }
 int getInt(const std::string& prompt) {
@@ -50,9 +57,9 @@ std::cout<<"1-Add task \n2-Show tasks \n3-delete task  \n4-make task done \n5-Sh
 int ch=getInt("");
 if (ch==0) break;
 if((ch==2||ch==3||ch==4)&&list->Tempty()){std::cout<<"Add new tasks first \n"; continue;}
-if((ch==5||ch==8)&list->Dempty()) {std::cout<<"Add new done tasks first \n"; continue;}
-if((ch==6||ch==9)&!list->issave()){std::cout<<"Delete file is turned off\n"; continue;}
-if((ch==6||ch==9)&list->Oempty()) {std::cout<<"Delete new tasks first \n"; continue;}
+if((ch==5||ch==8)&&list->Dempty()) {std::cout<<"Add new done tasks first \n"; continue;}
+if((ch==6||ch==9)&&!list->issave()){std::cout<<"Delete file is turned off\n"; continue;}
+if((ch==6||ch==9)&&list->Oempty()) {std::cout<<"Delete new tasks first \n"; continue;}
 if(ch==7&list->Dempty()&list->Oempty()){std::cout<<"No tasks to restart \n"; continue;}
 if(ch==8||ch==9){
     std::cout<<"Are you sure to "<<Color::RED<<"Delete "<<Color::RESET<<"(y/n)\n";
@@ -164,13 +171,14 @@ while(true){
 std::cout<<"What do want \n1-edit list name \n2set default save deletes \n3-";
 if(Pas=="")std::cout<<"set list Password\n";
 else std::cout<<"edit list Password or delete it\n";
-std::cout<<"4-show tasks default \n5-set goal \n6-clear list !\n";
+std::cout<<"4-show tasks default \n5-set goal \n6-clear list !\n0-Exit";
 int ch=getInt("");
 if(ch==0){break;}
 switch (ch){
 case 1:{
 std::string N;
 std::cout<<"Current name is :"<<list->getkey()<<" \n Enter new name\t\t ";
+std::cin.ignore();
 std::getline(std::cin,N);
 list->setkey(N);
 }break;
@@ -212,7 +220,7 @@ case 6:list->clear(); Pas="";
 }
 }
 }
-void menu(std::vector <List*> lists){
+void menu(std::vector <List*>& lists){
 
 //check here
 
@@ -220,7 +228,17 @@ int ch;
 while(true){
 std::cout<<"Hello to Bisto To Do List \n1-creat new list \n2-open old list \n3-Show lists  \n4-clear cache\n5-swap To Do lists\n6-edit name\n7-delete list \n8-Save data \n9-Autosaving \n0-exit\n";
 ch=getInt("");
-if(ch==0){ break;}
+if(ch==0){
+    std::cout<<"Are you sure to exit without saving data \n"; 
+    int su=getInt("Save(1)   Back(2)   exit anyway(0)");
+    if(su==1)
+    for(auto it:lists){
+    it->Savedata();
+    }
+    else if (su==2) continue;
+    else if(su==0)break;
+    else std::cout<<"Wrong choise\n";
+}
 if(ch==2&&lists.empty()){std::cout<<"Please add lists first \n"; continue;}
 switch (ch){
     case 1 :creatlist(lists);
@@ -250,16 +268,18 @@ break;
     
     break;
     case 4: 
-{for (auto it:lists){it->clearmemory();}} std::cout<<"Done";
+{for (auto it:lists){it->clearmemory();}} std::cout<<"Done\n";
 break;
 case 5:{
+    int num=1;
     for (auto x:lists){
-    std::cout<<x->getkey()<<"\n";
+    std::cout<<num<<"-"<<x->getkey()<<"\n";num++;
     }
     
 std::cout<<"Select two lists to swap \n";
 int l1=getInt("First: ");
 int l2=getInt("Second: ");
+if(l1>=lists.size()||l2>=lists.size()||l1==l2) {std::cout<<"Wrong swapping\n"; break;}
 std::swap(lists[l1-1],lists[l2-1]);}
 break;
 case 6:{
@@ -275,8 +295,9 @@ std::string Edit;
 std::cout<<"Enter new name \n";
 std::cin.ignore();
 std::getline(std::cin,Edit);
+if(chrepet(lists,Edit))
 lists[edit-1]->setkey(Edit);
-
+else std::cout<<"Wrong name\n";
 }
 break;
 case 7:{
@@ -304,6 +325,7 @@ break;
 }
 
 void loaddata(std::vector<List*>& list){
+    std::cout << "Open: " << std::filesystem::absolute("lists.txt") << '\n';
 std::ifstream data("lists.txt");
 if (data.is_open()){
 std::string line;
@@ -327,8 +349,9 @@ dat=false;
 if(line=="1")dat=true;
 newlist->addwant(dat);
 std::getline(data,line);
-std::string add;
+std::string add="";
 while(std::getline(data, line)){
+
 if(line=="Done:"){ 
     add="";
     break;}
@@ -345,7 +368,7 @@ if(line=="Old:"){
     add="";
     break;}
 if(line=="*") {
-    newlist->add(add);
+    newlist->adddone(add);
     add="";
     continue;
 }
@@ -357,7 +380,7 @@ if(line=="End"){
     add="";
     break;}
 if(line=="*") {
-    newlist->add(add);
+    newlist->addold(add);
     add="";
     continue;
 }
@@ -384,3 +407,5 @@ std::cout<<"Error while reading the file \n";
 
 }
 
+//continue check menu and file
+//Edit password lists and add it in List

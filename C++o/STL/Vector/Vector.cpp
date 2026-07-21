@@ -143,9 +143,9 @@ data<<it<<"\n*\n";
 data<<"Old:\n";
 for(auto it:old){
 data<<it<<"\n*\n";
-data.close();
 }
-
+data<<"End\n";
+data<<"09996710\n";
 }
 }
 void List::adddone(std::string don) 
@@ -159,7 +159,7 @@ std::ifstream old("lists.txt");
 std::ofstream current("temp.txt");
 if(!old||!current) return;
 while(std::getline(old,line)){
-if(line.find(Idstr)!=std::string::npos){
+if(line==Idstr){
 printdata(current);
 skipmode=true;
 continue;

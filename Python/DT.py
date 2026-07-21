@@ -553,22 +553,52 @@ def menu(users:dict,foot:set,basket:set,swim:set,want:dict,complains:list,masseg
                             break
                         elif wanted=="s" or wanted=="save":break
                         else:continue
-def capmenu(captains:dict):
-    print
+def capmenu(users:dict,foot:set,basket:set,swim:set,want:dict,complains:list,masseges:dict,captains:dict):
+    allowed=False
+    user=""
+    while True:
+        print("Enter username ")
+        user=input().strip()
+        if user in captains.keys():
+            print("Enter your Password ")
+            che=input("")
+            if che==captains[user] :
+                allowed=True 
+                break 
+            else:
+                print("Wrong password please try again ")
+                continue
+        else:
+            print("Username isn't found !")
+            continue
+    while allowed :
+        theremasseges,there=False,""
+        if len(masseges[user])>0:theremasseges,there=True,"●"
+        else:theremasseges,there=False,""
+        print(f"Hello {user} To Bisto sportsclub ")
+        c=input(f"Select What do you need \n1-tariners \n2-make a complaint \n3-see Massage {there} \n0-Exit ").strip()
+        if c=="0":break
+        if c=="1" and captains[user][3]==False:
+            print("You aren't work yet")
+            continue
+        if not theremasseges and c=="3":
+            print("You don't have massegs")
+            continue
 def signin(Pas:dict,captains: dict,masseges:dict):
     print("Hello to new account Are you (a captain(1) or a trainer(2))")
     U=input("")
     if U=="1":
         while True:
-            print("Hello Captain put your name and adress and age and Gender")
+            print("Hello Captain put your name and adress and age and Gender and training")
             N=input("Name:  ").strip()
             A=input("Age:  ").strip()
             Ad=input("Adresse:  ").strip()
             G=input("Gender:  ").strip()
+            t=input("Want to be:  ")
             if(G=="" or A=="" or N=="" or Ad=="" or not A.isdigit  ):
                 print("There is wrong in data please repeat")
                 continue
-            captains[N]=[int(A),Ad,G,False]
+            captains[N]=[int(A),Ad,G,False,t]
             print("When we accept you we'll send to you")
             break
     if U=="2":
@@ -588,12 +618,16 @@ def signin(Pas:dict,captains: dict,masseges:dict):
             break
 
 # everything for captain
+#stop right now
 swimmers={"Ahmed","Akrm","Ali","Noor","Er"}
 Basketball_players={"Ahmed","Saed","Moha","Noor","Er"}
 Football_players={"Akrm","Ahmed","Moha","SoSo","Er"}
 users=dict()
 captains={
-    "Name":["Age","Adresse","Gender","Working or No"]
+    "Name":["Age","Adresse","Gender","Working or No","What working"]
+}
+pasc={
+    "capname":"password"
 }
 believes=dict()
 masseges=dict()
@@ -605,7 +639,8 @@ while True:
     ch=input("").strip()
     if ch=="1":admpws=admin(admpws,users,Football_players,Basketball_players,swimmers,believes,complains,favoriteadmin,masseges)
     elif ch=="2":signin(users,captains,masseges)
-    elif ch=="3":menu(users,Football_players,Basketball_players,swimmers,believes,complains,masseges)
-    elif ch=="4":capmenu(captains)
+    elif ch=="3":menu(
+        users,Football_players,Basketball_players,swimmers,believes,complains,masseges)
+    elif ch=="4":capmenu(users,Football_players,Basketball_players,swimmers,believes,complains,masseges,captains)
     elif ch=="5": break
     else :print("Wrong choise ")
