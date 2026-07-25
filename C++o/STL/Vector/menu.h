@@ -1,5 +1,6 @@
 #include<string>
 #include "Vector.h"
+#include <memory>
 #ifndef MENU_H  
 #define MENU_H  
 int getInt(const std::string& prompt);
@@ -28,9 +29,9 @@ public:
     static inline const std::string BG_YELLOW   = "\033[43m";
     static inline const std::string BG_BLUE     = "\033[44m";
 };
-void listmenu(List* list);
-void set(List* list,std::string&);
-void menu(std::vector <List*>& lists);
-void loaddata(std::vector <List*>& lists);
-void creatlist(std::vector<List*>& lists);
+void listmenu(std::unique_ptr <List>& list);
+void set(std::unique_ptr <List>& list);
+void menu(std::vector <std::unique_ptr<List>>& lists);
+void loaddata(std::vector <std::unique_ptr <List>>& list);
+void creatlist(std::vector<std::unique_ptr <List>>& lists);
 #endif

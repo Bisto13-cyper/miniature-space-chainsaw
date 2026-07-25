@@ -16,8 +16,8 @@ for(auto X:ToDo){std::cout<<count<<"-"<<X<<"\n"; count++;}
     }
 if(rev){
 int count=ToDo.size();
-for(auto X=ToDo.rbegin();
-X>ToDo.rend();X++) std::cout<<count<<"-"<<&X<<"\n"; count--;}
+for(auto X=ToDo.rbegin();X!=ToDo.rend();X++) {std::cout<<count<<"-"<<*X<<"\n"; count--;}
+}
 }
 void List::del(int d){
 auto iter=ToDo.begin()+ (d-1);
@@ -94,7 +94,7 @@ std::string List:: gettext(int index){
 try{
 ToDo.at(index);
 }
-catch(const std::out_of_range& e){std::cout<<"Not found\n";}
+catch(const std::out_of_range& e){std::cout<<"Not found\n"; return"";}
 return ToDo.at(index);
 }
 void List:: edit(int index,std::string Edit){
@@ -111,7 +111,7 @@ std::iter_swap(ToDo.begin() + s, ToDo.begin() + d);
 void List::savenewdate(){
 std::ofstream data("lists.txt",std::ios::app);
 if(data.is_open()){
-data<<"09996718\n"<<id<<"\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
+data<<id<<"\n"<<key<<"|"<<password<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
 data<<"ToDo:\n";
 for(auto it:ToDo){
 data<<it<<"\n*\n";
@@ -131,7 +131,7 @@ data.close();
 }
 void List::printdata(std::ofstream &data){
 if(data.is_open()){
-data<<id<<"\n"<<key<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
+data<<id<<"\n"<<key<<"|"<<password<<"|"<<rev<<"|"<<save<<"|"<<want<<"\n";
 data<<"ToDo:\n";
 for(auto it:ToDo){
 data<<it<<"\n*\n";
@@ -155,10 +155,10 @@ void List::addold(std::string ol)
 void List::savedatafrom(){
     bool skipmode=false;
 std::string Idstr=id,line;
-std::ifstream old("lists.txt");
+std::ifstream oldfile("lists.txt");
 std::ofstream current("temp.txt");
-if(!old||!current) return;
-while(std::getline(old,line)){
+if(!oldfile||!current) return;
+while(std::getline(oldfile,line)){
 if(line==Idstr){
 printdata(current);
 skipmode=true;
@@ -169,7 +169,7 @@ if(line.find("End")!=std::string::npos&&skipmode) skipmode=false;
 if(!skipmode) 
 current<<line<<"\n";
 }
-old.close();
+oldfile.close();
 current. close();
 remove("lists.txt");
 rename("temp.txt","lists.txt");
@@ -193,12 +193,18 @@ if(line==id){
 file.close();
 return false;
 }
+void List:: setpas(std::string pas){
+if(password=="") password=pas;
+}
+void List::changepas(std::string oldpas,std::string newpas){
+if(checkpas(oldpas)) password=newpas;
+else std::cout<<"Wrong !";
 
-//try search and sittings and file handling
+}
+
+//use unique_ptr
 
 
-
-//add file handling them try Every thing
 void vectorsexplain(){
 std::vector<int> A;
 std::vector <int>B;

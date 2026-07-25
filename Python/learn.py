@@ -121,5 +121,21 @@ mydict={
     "love":"She"
     }
 
-print(**mydict)
-#print(*mydict)
+def skills (name,age,*certificates,**skill):
+    print(f"Hello {name} who has {age} you've certificates")
+    for N,C in enumerate(certificates,1):
+        print(f"{N}- {C}")
+    print("You've skills")
+    for N,P in skill.items():
+        print(f"Skill: {N}:{P} ")
+        
+programinC=["CSS","Software engineering","Hello world","Microsoft" ]
+AcademicC=["Secondary School","University"]
+skill={
+    "Python ":"50%",
+    "C++ ":"70%",
+    "N8N ":"90%",
+    "Swimming ":"100%"
+
+}
+skills("Bisto",21,*programinC,*AcademicC,**skill)

@@ -13,15 +13,18 @@ std::vector<std::string>old;
 std::vector<std::string> done;
 std::string key;
 std::string id;
-bool rev,save,want;
+std::string password; 
+bool rev=false,save=true,want=false;
 
 bool Idfound();
 void savenewdate();
 void savedatafrom();
 void printdata(std::ofstream &file);
 public:
-List (std::string k):key(k){id=std::to_string(gen());}
+List (std::string k):key(k){id=std::to_string(gen()); password="";}
 List (std::string k,std::string i):key(k){id=i;}
+List (std::string k,std::string i,std::string pas):key(k),password(pas){id=i;}
+void setpas(std::string pas);
 void saving(bool S){save=S;}
 bool issave(){return save;}
 void add(std::string added){ToDo.emplace_back(added);}
@@ -56,6 +59,9 @@ void addwant(bool w){want=w;}
 void adddone(std::string);
 void addold(std::string);
 void Savedata();
+bool ispas(){return password!="";}
+bool checkpas(std::string ch){return ch==password;}
+void changepas(std::string,std::string);
 ~List(){ToDo.clear();done.clear();old.clear();}
 };
 #endif

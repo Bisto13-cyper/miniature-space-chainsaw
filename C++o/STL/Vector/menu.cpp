@@ -6,21 +6,20 @@
 #include "Vector.h"
 #include<algorithm>
 #include <filesystem>
-bool chrepet(const std::vector<List*>& lists,std::string name){ 
+#include <memory>
+bool chrepet(const std::vector<std::unique_ptr <List>>& lists,std::string name){ 
     if(name.empty()){std::cout<<"Can't Add  space\n"; return false;}
     for (const auto& it:lists){if(it->getkey()==name) 
 { std::cout<<"Name is found\n"; return false;}
         }
     return true;
 }
-void creatlist(std::vector<List*>& lists){ 
-        std::cout<<"Enter list's name\n";
+void creatlist(std::vector<std::unique_ptr <List>>& lists){        std::cout<<"Enter list's name\n";
         std::string name;
         std::cin.ignore();
         std::getline(std::cin,name);
         if(!chrepet(lists,name)) return;
-        List* newl=new List(name);
-        lists.push_back(newl);
+        lists.push_back(std::make_unique<List>(name));
         std::cout<<"Adeed !\n";
     
         //std::sort(lists.begin(),lists.end());
@@ -41,14 +40,13 @@ std::numeric_limits<std::streamsize>::max(), '\n'
 std::cout<<"Please Enter number";
 }
 }
-void listmenu(List* list){
-static std::string Pas=""; //make Password in Class
-if(Pas==""){}
+void listmenu(std::unique_ptr <List>& list){
+if(!list->ispas()){}
 else{
 std::cout<<"Enter list's password \n";
 std::string check;
 std::getline(std::cin,check);
-if(Pas==check) std::cout<<"Wellcome Back \n";
+if(list->checkpas(check)) std::cout<<"Wellcome Back \n";
 else {std::cout<<"Wrong Password";return;}
 }
 std::cout<<"Hello to "<<list->getkey()<<"To Do list \n";
@@ -60,7 +58,7 @@ if((ch==2||ch==3||ch==4)&&list->Tempty()){std::cout<<"Add new tasks first \n"; c
 if((ch==5||ch==8)&&list->Dempty()) {std::cout<<"Add new done tasks first \n"; continue;}
 if((ch==6||ch==9)&&!list->issave()){std::cout<<"Delete file is turned off\n"; continue;}
 if((ch==6||ch==9)&&list->Oempty()) {std::cout<<"Delete new tasks first \n"; continue;}
-if(ch==7&list->Dempty()&list->Oempty()){std::cout<<"No tasks to restart \n"; continue;}
+if(ch==7&&list->Dempty()&&list->Oempty()){std::cout<<"No tasks to restart \n"; continue;}
 if(ch==8||ch==9){
     std::cout<<"Are you sure to "<<Color::RED<<"Delete "<<Color::RESET<<"(y/n)\n";
     char S;
@@ -68,12 +66,13 @@ std::cin>>S;
 if (S=='Y'||S=='y'){std::cout<<"Deleted !\n";}
 else if(S=='N'||S=='n'){continue;}
 }
-
+if((ch==12||ch==13)&&list->Tempty()){std::cout<<"List is empty\n"; continue;}
 switch (ch){
 case 1: {
 std::string task;
 std::cout<<"                              \t\t Press * to stop writing                      \n";
 std::cout<<"Enter Task  [ ";
+std::cin.ignore();
 std::getline(std::cin,task,'*');
 list->add(task);
 }break;
@@ -105,7 +104,7 @@ case 9:list->clearO();
 break;
 case 10:list->clearmemory();
 break;
-case 11:set(list,Pas);
+case 11:set(list);
 break;
 case 12:std::cout<<"Next Task is {"<<list->next()<<"}\n";
 break;
@@ -150,8 +149,10 @@ std::cout<<"Enter 0 to exit \n";
 list->show();
 int s=getInt("You want task Number ... ");
 if (s==0)break;
+if(!list->found(s-1)){std::cout<<"Wrong number\n";break;}
 int d=getInt("To be Number ... ");
 if (d==0)break;
+if(!list->found(d-1)){std::cout<<"Wrong number\n";break;}
 list->setpro(s-1,d-1);
 }
 
@@ -165,11 +166,11 @@ std::cout<<Color::GREEN<<"Saved !\n"<<Color::RESET;
 
 }
 }
-void set(List* list,std::string& Pas){
+void set(std::unique_ptr <List>& list){
 std::cout<<"Hello Admin list to list settings \n";
 while(true){
 std::cout<<"What do want \n1-edit list name \n2set default save deletes \n3-";
-if(Pas=="")std::cout<<"set list Password\n";
+if(!list->ispas())std::cout<<"set list Password\n";
 else std::cout<<"edit list Password or delete it\n";
 std::cout<<"4-show tasks default \n5-set goal \n6-clear list !\n0-Exit";
 int ch=getInt("");
@@ -190,15 +191,30 @@ else if(S==2){list->saving(false); "New settings Saved \n"; list->clearD();}
 else std::cout<<"Wrong Input \n";}
 break;
 case 3:{
-std::string MS,pas;
-std::cout<<"Enter new password  exit(0) delete current password (1)\n ";
-if(pas=="0") break;
-if(pas=="1") {pas="";std::cout<<"Deleted!\n";}
+    std::string pas;
+    if(list->ispas()){
+std::string check;
+std::cin.ignore();
+std::getline(std::cin,check);
+if(list->checkpas(check)) {
+std::cout<<"Enter new password or delete current pas(0)\n";
+std::cin.ignore();
 std::getline(std::cin,pas);
-std::cout<<"Enter again \n";
-std::getline(std::cin,MS);
-if(MS==pas){Pas=pas;std::cout<<"Done \n";}
-else std::cout<<"Wrong !\n";
+if(pas=="0"){list->changepas(check,"");std::cout<<"Deleteed \n";}
+else{
+list->changepas(check,pas);
+std::cout<<"Changed \n";
+}
+}
+
+    }
+    else{
+std::cout<<"Enter new password\n";
+std::cin.ignore();
+std::getline(std::cin,pas);
+list->setpas(pas);
+std::cout<<"created \n";
+    }
 }break;
 case 4:{
 std::cout<<"Do want see Task from (start to end [1]) Or (end to start[2])\n";
@@ -216,11 +232,11 @@ int done=getInt("");
 list->setwant(add,done);
 }
 break;
-case 6:list->clear(); Pas="";
+case 6:list->clear(); 
 }
 }
 }
-void menu(std::vector <List*>& lists){
+void menu(std::vector <std::unique_ptr<List>>& lists){
 
 //check here
 
@@ -231,10 +247,10 @@ ch=getInt("");
 if(ch==0){
     std::cout<<"Are you sure to exit without saving data \n"; 
     int su=getInt("Save(1)   Back(2)   exit anyway(0)");
-    if(su==1)
-    for(auto it:lists){
+    if(su==1){
+    for(auto& it:lists){
     it->Savedata();
-    }
+    }break;}
     else if (su==2) continue;
     else if(su==0)break;
     else std::cout<<"Wrong choise\n";
@@ -246,7 +262,7 @@ switch (ch){
     case 2:{
             std::cout<<"Lists : "<<lists.size()<<" list \n";
             int I=1;
-        for (auto x:lists){
+        for (auto& x:lists){
         std::cout<<I<<"-"<<x->getkey()<<"\n"; I++;
         }
         while (true){
@@ -262,29 +278,28 @@ break;
     break;
     case 3:{
         std::cout<<"Lists : "<<lists.size()<<" list \n";
-        for (auto x:lists){
+        for (auto& x:lists){
         std::cout<<x->getkey()<<"\n";
 }}
     
     break;
-    case 4: 
-{for (auto it:lists){it->clearmemory();}} std::cout<<"Done\n";
+    case 4:{for (auto& it:lists){it->clearmemory();}} std::cout<<"Done\n";
 break;
 case 5:{
     int num=1;
-    for (auto x:lists){
+    for (auto& x:lists){
     std::cout<<num<<"-"<<x->getkey()<<"\n";num++;
     }
     
 std::cout<<"Select two lists to swap \n";
 int l1=getInt("First: ");
 int l2=getInt("Second: ");
-if(l1>=lists.size()||l2>=lists.size()||l1==l2) {std::cout<<"Wrong swapping\n"; break;}
+if(l1>lists.size()||l2>lists.size()||l1==l2||l1<=0||l2<=0) {std::cout<<"Wrong swapping\n"; break;}
 std::swap(lists[l1-1],lists[l2-1]);}
 break;
 case 6:{
     int i=1;
-    for (auto x:lists){
+    for (auto& x:lists){
     std::cout<<i<<"-"<<x->getkey()<<"\n";
     i++;
     }
@@ -302,7 +317,7 @@ else std::cout<<"Wrong name\n";
 break;
 case 7:{
 int i=1;
-    for (auto x:lists){
+    for (auto& x:lists){
     std::cout<<i<<"-"<<x->getkey()<<"\n";
     i++;
     }
@@ -310,12 +325,11 @@ std::cout<<"Which list you wanna delete\n";
 int del=getInt("");
 if (del>lists.size()||del<=0){break;}
 auto it=lists.begin()+(del-1);
-delete *it;
 lists.erase(it); std::cout<<"Deleteed!\n";
 }
 break;
 case 8:{
-for(auto it:lists){
+for(auto& it:lists){
 it->Savedata();
 }}
 break;
@@ -324,7 +338,7 @@ break;
 }
 }
 
-void loaddata(std::vector<List*>& list){
+void loaddata(std::vector <std::unique_ptr <List>>& list){
     std::cout << "Open: " << std::filesystem::absolute("lists.txt") << '\n';
 std::ifstream data("lists.txt");
 if (data.is_open()){
@@ -332,10 +346,11 @@ std::string line;
 std::getline(data,line);
 if(line=="09996718"){
 while(true){
-    std::string id;
+    std::string id,pass;
 std::getline(data,id);
 std::getline(data,line,'|');
-List* newlist = new List(line,id);
+std::getline(data,pass,'|');
+auto newlist = std::make_unique <List>(line,id,pass);
 std::getline(data,line,'|');
 bool dat=false;
 if(line=="1")dat=true;
@@ -387,7 +402,7 @@ if(line=="*") {
 if(!line.empty())
 add+=line+"\n";
 }
-list.push_back(newlist);
+list.push_back(std::move(newlist));
 std::getline(data,line);
 std::string check;
 std::getline(data,check);
@@ -407,5 +422,3 @@ std::cout<<"Error while reading the file \n";
 
 }
 
-//continue check menu and file
-//Edit password lists and add it in List
